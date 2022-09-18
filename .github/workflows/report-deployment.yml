@@ -1,0 +1,29 @@
+name: Report Deployment
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  report-deployment:
+    name: Report new deployment Entity
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Report deployment Entity to port 🚢"
+        uses: port-labs/port-github-action@v1
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          identifier: notification-service-prod-${{ env.SHA_SHORT }}
+          title: Notification-Service-Production-${{ env.SHA_SHORT }}
+          blueprint: Deployment
+          properties: |
+            {
+               "jobUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+               "commitSha": "${{ env.SHA_SHORT }}"
+            }
+          relations: |
+            {
+               "instanceOf": "notification-service-prod"
+            }

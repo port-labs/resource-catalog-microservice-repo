@@ -1,6 +1,6 @@
 identifier: notification-service
 title: Notification Service
-blueprint: microservice
+blueprint: Microservice
 properties:
   slackChannel: "https://yourslack.slack.com/archives/CHANNEL-ID"
   repoUrl: "https://github.com/port-labs/resource-catalog-microservice-repo"
