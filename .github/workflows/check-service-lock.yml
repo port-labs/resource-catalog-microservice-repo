@@ -1,0 +1,43 @@
+name: Check Service Lock
+on:
+  workflow_call:
+    inputs:
+      SERVICE_NAME:
+        required: true
+        type: string
+        default: notification-service
+      RUNTIME:
+        required: true
+        type: string
+        default: production
+    secrets:
+      PORT_CLIENT_ID:
+        required: true
+      PORT_CLIENT_SECRET:
+        required: true
+jobs:
+  get-entity:
+    runs-on: ubuntu-latest
+    outputs:
+      entity: ${{ steps.port-github-action.outputs.entity }}
+    steps:
+      - id: port-github-action
+        name: Get entity from Port
+        uses: port-labs/port-github-action@v1
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          identifier: ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }}
+          blueprint: DeploymentConfig
+          operation: GET
+  check-lock-status:
+    runs-on: ubuntu-latest
+    needs: get-entity
+    steps:
+      - name: Get entity lock status
+        run: echo "LOCK_STATUS=$(echo '${{needs.get-entity.outputs.entity}}' | jq -r .properties.locked)" >> $GITHUB_ENV
+      - name: Check lock status 🚧
+        if: ${{ env.LOCK_STATUS == 'true' }}
+        run: |
+          echo "Service ${{ inputs.SERVICE_NAME }} in environment ${{ inputs.RUNTIME }} is locked, stopping deployment"
+          exit 1

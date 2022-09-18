@@ -6,6 +6,15 @@ on:
       - "main"
 
 jobs:
+  check-lock-status:
+    uses: ./.github/workflows/check-service-lock.yml
+    with:
+      SERVICE_NAME: notification-service
+      RUNTIME: production
+    secrets:
+      PORT_CLIENT_ID: ${{ secrets.PORT_CLIENT_ID }}
+      PORT_CLIENT_SECRET: ${{ secrets.PORT_CLIENT_SECRET }}
+
   report-deployment:
     name: Report new deployment Entity
     runs-on: ubuntu-latest
