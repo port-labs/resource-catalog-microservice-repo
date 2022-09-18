@@ -10,6 +10,9 @@ jobs:
     name: Report new deployment Entity
     runs-on: ubuntu-latest
     steps:
+      # SHA short will be available under the variable $SHA_SHORT or ${{ env.SHA_SHORT }}
+      - name: Extract SHA short
+        run: echo "SHA_SHORT=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
       - name: "Report deployment Entity to port 🚢"
         uses: port-labs/port-github-action@v1
         with:
