@@ -34,7 +34,7 @@ jobs:
           properties: |
             {
                "jobUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-               ״deployingUser": "${{ github.actor }}",
+               "deployingUser": "${{ github.actor }}",
                "imageTag": "latest",
                "commitSha": "${{ env.SHA_SHORT }}"
             }
