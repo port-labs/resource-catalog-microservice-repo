@@ -3,3 +3,10 @@ title: Notification Service
 blueprint: Microservice
 properties:
   slackChannel: "https://yourslack.slack.com/archives/CHANNEL-ID"
+  responsibleTeam: "Infra"
+  onCall: "Mor P"
+  coreLanguage: "Python"
+  businessDomain: "Infra"
+  docsLink: "https://docs.exmaple.com"
+  deploymentService: "Lambda"
+  helmLink: "https://github.com/port-labs/helm/notification.yml"
