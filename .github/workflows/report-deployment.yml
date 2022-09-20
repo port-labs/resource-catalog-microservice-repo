@@ -40,5 +40,5 @@ jobs:
             }
           relations: |
             {
-               "deploymentConfig": "notification-service-prod"
+               "DeploymentConfig": "notification-service-prod"
             }
