@@ -36,6 +36,26 @@ jobs:
     steps:
       - name: Get entity lock status
         run: echo "LOCK_STATUS=$(echo '${{needs.get-entity.outputs.entity}}' | jq -r .properties.locked)" >> $GITHUB_ENV
+      - name: Report locked deployment
+        uses: port-labs/port-github-action@v1
+        if: ${{ env.LOCK_STATUS == 'true' }}
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          identifier: ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }}
+          title: Recommendation-Service-Production-${{ env.SHA_SHORT }}
+          blueprint: ciJobRun
+          properties: |
+            {
+               "githubActionUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+               "user": "${{ github.actor }}",
+               "commitSha": "${{ env.SHA_SHORT }}"
+               "status": "Failed"
+            }
+          relations: |
+            {
+               "deployed": "recommendation-production"
+            }
       - name: Check lock status 🚧
         if: ${{ env.LOCK_STATUS == 'true' }}
         run: |
