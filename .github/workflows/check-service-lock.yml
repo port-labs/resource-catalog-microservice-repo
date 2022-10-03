@@ -34,6 +34,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: get-entity
     steps:
+      - name: Extract SHA short
+        run: echo "SHA_SHORT=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
       - name: Get entity lock status
         run: echo "LOCK_STATUS=$(echo '${{needs.get-entity.outputs.entity}}' | jq -r .properties.locked)" >> $GITHUB_ENV
       - name: Report locked deployment
@@ -49,7 +51,7 @@ jobs:
             {
                "githubActionUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                "user": "${{ github.actor }}",
-               "commitSha": "${{ env.SHA_SHORT }}"
+               "commitSha": "${{ env.SHA_SHORT }}",
                "status": "Failed"
             }
           relations: |
