@@ -44,7 +44,6 @@ jobs:
         with:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
-          identifier: ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }}-${{ env.SHA_SHORT }}
           title: ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }}-${{ env.SHA_SHORT }}
           blueprint: ciJobRun
           properties: |
