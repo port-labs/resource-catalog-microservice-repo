@@ -28,7 +28,7 @@ jobs:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
           identifier: ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }}
-          blueprint: DeploymentConfig
+          blueprint: runningService
           operation: GET
   check-lock-status:
     runs-on: ubuntu-latest
