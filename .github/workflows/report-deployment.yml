@@ -37,7 +37,8 @@ jobs:
                "githubActionUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                "user": "${{ github.actor }}",
                "commitSha": "${{ env.SHA_SHORT }}",
-               "status": "Success"
+               "status": "Success",
+               "additionalInfo": "Deployment complete"
             }
           relations: |
             {
