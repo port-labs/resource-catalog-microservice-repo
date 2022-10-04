@@ -52,7 +52,7 @@ jobs:
                "user": "${{ github.actor }}",
                "commitSha": "${{ env.SHA_SHORT }}",
                "status": "Failed",
-               "additionalInfo": "Deployment failed because service ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }} is locked"
+               "additionalInfo": "Deployment failed: service ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }} is locked"
             }
           relations: |
             {
