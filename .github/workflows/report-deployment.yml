@@ -1,17 +1,16 @@
-name: Deploy Recommendation Prod
+name: Report Deployment
 
 on:
-  # push:
-  #   branches:
-  #     - "main"
-  workflow_dispatch:
+  push:
+    branches:
+      - "main"
 
 jobs:
   check-lock-status:
     uses: ./.github/workflows/check-service-lock.yml
     with:
-      SERVICE_NAME: recommendation
-      RUNTIME: production
+      SERVICE_NAME: notification-service
+      RUNTIME: prod
     secrets:
       PORT_CLIENT_ID: ${{ secrets.PORT_CLIENT_ID }}
       PORT_CLIENT_SECRET: ${{ secrets.PORT_CLIENT_SECRET }}
@@ -21,7 +20,6 @@ jobs:
     needs: [check-lock-status]
     runs-on: ubuntu-latest
     steps:
-      # SHA short will be available under the variable $SHA_SHORT or ${{ env.SHA_SHORT }}
       - name: Extract SHA short
         run: echo "SHA_SHORT=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
       - name: "Report deployment Entity to port 🚢"
@@ -29,18 +27,17 @@ jobs:
         with:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
-          identifier: recommendation-service-production-${{ env.SHA_SHORT }}
-          title: Recommendation-Service-Production-${{ env.SHA_SHORT }}
-          blueprint: ciJobRun
+          identifier: notification-service-prod-${{ env.SHA_SHORT }}
+          title: Notification-Service-Production-${{ env.SHA_SHORT }}
+          blueprint: deployment
           properties: |
             {
-               "githubActionUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-               "user": "${{ github.actor }}",
-               "commitSha": "${{ env.SHA_SHORT }}",
-               "status": "Success",
-               "additionalInfo": "Deployment complete"
+               "jobUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+               "deployingUser": "${{ github.actor }}",
+               "imageTag": "latest",
+               "commitSha": "${{ env.SHA_SHORT }}"
             }
           relations: |
             {
-               "deployed": "recommendation-production"
+               "deploymentConfig": "notification-service-prod"
             }

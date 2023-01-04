@@ -1,4 +1,5 @@
 name: Check Service Lock
+
 on:
   workflow_call:
     inputs:
@@ -15,6 +16,7 @@ on:
         required: true
       PORT_CLIENT_SECRET:
         required: true
+
 jobs:
   get-entity:
     runs-on: ubuntu-latest
@@ -28,36 +30,14 @@ jobs:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
           identifier: ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }}
-          blueprint: runningService
+          blueprint: deploymentConfig
           operation: GET
   check-lock-status:
     runs-on: ubuntu-latest
     needs: get-entity
     steps:
-      - name: Extract SHA short
-        run: echo "SHA_SHORT=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
       - name: Get entity lock status
         run: echo "LOCK_STATUS=$(echo '${{needs.get-entity.outputs.entity}}' | jq -r .properties.locked)" >> $GITHUB_ENV
-      - name: Report locked deployment
-        uses: port-labs/port-github-action@v1
-        if: ${{ env.LOCK_STATUS == 'true' }}
-        with:
-          clientId: ${{ secrets.PORT_CLIENT_ID }}
-          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
-          title: ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }}-${{ env.SHA_SHORT }}
-          blueprint: ciJobRun
-          properties: |
-            {
-               "githubActionUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-               "user": "${{ github.actor }}",
-               "commitSha": "${{ env.SHA_SHORT }}",
-               "status": "Failed",
-               "additionalInfo": "Deployment failed: service ${{ inputs.SERVICE_NAME }}-${{ inputs.RUNTIME }} is locked"
-            }
-          relations: |
-            {
-               "deployed": "recommendation-production"
-            }
       - name: Check lock status 🚧
         if: ${{ env.LOCK_STATUS == 'true' }}
         run: |
